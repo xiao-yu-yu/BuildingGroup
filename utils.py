@@ -256,6 +256,17 @@ def filt_tris(triangles, pointList, pointList2, edgeIDList):
     polygonList = []
     setPointList2 = set(pointList2)
 
+    # 筛选建筑拓扑错误
+    xy = triangles['vertices'].tolist()
+    XY = []
+    llist = []
+    for i in pointList:
+        XY.append([i[0], i[1]])
+    for i in xy:
+        if i not in XY:
+            llist.append(i)
+    print(llist)
+
     for tri in triangles['triangles']:
         points = [pointList[i] for i in tri]
         edges = [edgeIDList[i] for i in tri]
@@ -714,7 +725,7 @@ def main(folder):
 
     print("Open the folder:{}".format(folder))
     print("Data input...")
-    building_path=os.path.join(folder,"stu_b")+".shp"
+    building_path=os.path.join(folder,"stuAll")+".shp"
     partition_path=os.path.join(folder,"partition")+".shp"
     tri_path = os.path.join(folder, "tri") + ".shp"
     skeleton_path = os.path.join(folder, "skeleton") + ".shp"
@@ -731,8 +742,11 @@ def main(folder):
     print("Extracting geometric features...")
     building_geometric_feature,building_boundary=extracting_geometric_features(building_feature)
 
-    print("Feature normalization...")
-    x = standardize_geometric_features(building_geometric_feature)
+    x=building_geometric_feature
+
+    # print("Feature normalization...")
+    # x = standardize_geometric_features(building_geometric_feature)
+    # print(x.shape,building_geometric_feature.shape)
 
 
     print("Constructing triangulation network...")
@@ -753,5 +767,5 @@ def main(folder):
 
 if __name__ == "__main__":
     # Replace with your building aggregate folder path
-    folder_path = './data'
+    folder_path = './stu'
     main(folder_path)
